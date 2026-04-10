@@ -1,11 +1,9 @@
 import uuid
 from datetime import datetime
 
-import uuid
-from datetime import datetime
-
 class Habit:
     # use keyword arguments for the optional fields with sensible defaults
+    # defaults make habit creation easier for user
     def __init__(self, user_id, name, category_id=None, description="", goal_time="any", recurrence="daily", alerts=None, id=None, created_at=None, current_streak=0):
         
         # make sure there is a name
@@ -24,6 +22,9 @@ class Habit:
         self.recurrence = recurrence
         self.alerts = alerts if alerts is not None else []
         self.current_streak = current_streak
+        # Gemini helped with datetime.now(), originally I did datetime.now.isoformat() but we found
+        # issues with the created_at timestamp being changed as it was passed to the database
+        # and so we had AI help us fix the issue of unncessary updates to timestamps
         self.created_at = created_at if created_at else datetime.now().isoformat()
 
     def to_dict(self):

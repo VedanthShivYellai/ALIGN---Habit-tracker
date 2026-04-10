@@ -6,7 +6,7 @@ from datetime import datetime
 # retrive the category id
 
 class Category:
-    def __init__(self, name, user_id, color="#800080", icon="default"):
+    def __init__(self, name, user_id, color="#800080", icon="default", created_at=None):
         if not name or not str(name).strip():
             raise ValueError("Category name cannot be empty.")
         self.id = str(uuid.uuid4())
@@ -14,7 +14,7 @@ class Category:
         self.user_id = user_id
         self.color = color
         self.icon = icon
-        self.created_at = datetime.now().isoformat()
+        self.created_at = created_at if created_at else datetime.now().isoformat()
 
     #methods
 
