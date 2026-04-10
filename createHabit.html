@@ -1,0 +1,48 @@
+#Claude AI provided a walkthrough to explain how to implement code for the "Create a habit" UI based on our initial mock up. Given Prompt:"provide a walkthrough to explain how to implement code for the "Create a habit" page UI based on the given initial mock up"
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>New Habit</title>
+    <link rel="stylesheet" href="styles.css"/>
+    </head>
+    <body>
+        <div class="container">
+            <div class="add-header">
+                <button id="cancelBtn" type="button">Cancel</button>
+                <span>New habit</span>
+                <span></span>
+        </div>
+        <div class="divider"></div>
+            <form id="habitForm" novalidate>
+                <div class="form-section">
+                    <label class ="form-label" for="habitName">Habit name</label>
+                    <input
+                    class="form-input"
+                    type ="text"
+                    id="habitName"
+                    placeholder="e.g. Morning,run, Journal..."
+                    maxLength="32"
+                    autocomplete="off"
+                    />
+                    <span class="field-error" id="nameError"></span>
+                </div>
+                <div class="form-section">
+                    <span class="form-label">Icon</span>
+                    <div class="emoji-grid" id="emojiGrid">
+                        <button type ="button" class="emoji-opt selected" data-value ="🏃">🏃</button>
+                        <button type ="button" class="emoji-opt" data-value ="💧">💧</button>
+                        <button type ="button" class="emoji-opt" data-value ="🧘">🧘</button>
+                        <button type ="button" class="emoji-opt" data-value ="📖">📖</button>
+                        <button type ="button" class="emoji-opt" data-value ="🥗">🥗</button>
+                        <button type ="button" class="emoji-opt" data-value ="🎯">🎯</button>
+                        <button type ="button" class="emoji-opt" data-value ="💪">💪</button>
+                        <button type ="button" class="emoji-opt" data-value ="✍️">✍️</button>
+                    </div>
+                    <input type ="hidden" id="selectedIcon" value="🏃/>
+                </div>
+            </form>
+    </div>
+        <script src="script.js"></script>
+    </body>
