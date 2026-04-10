@@ -9,6 +9,7 @@ class Habit:
     def __init__(self, user_id, name, category_id=None, description="", goal_time="any", recurrence="daily", alerts=None, id=None, created_at=None, current_streak=0):
         
         # make sure there is a name
+        # Gemini AI helped add the .strip() stuff
         if not name or not str(name).strip():
             raise ValueError("Habit name cannot be empty.")
         if not user_id:
