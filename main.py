@@ -1,3 +1,5 @@
+
+
 def add_habit(data):
     habit = Habit(data.get("id"),
             data.get("user_id"),
@@ -7,3 +9,7 @@ def add_habit(data):
             data.get("recurrence", "daily"),
             data.get("alerts", []),
             data.get("current_streak", 0))
+    
+def remove_habit():
+    return None
+
