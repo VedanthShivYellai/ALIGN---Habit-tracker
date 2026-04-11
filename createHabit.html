@@ -1,4 +1,4 @@
-#Claude AI provided a walkthrough to explain how to implement code for the "Create a habit" UI based on our initial mock up. Given Prompt:"provide a walkthrough to explain how to implement code for the "Create a habit" page UI based on the given initial mock up"
+<!-- #Claude AI provided a walkthrough to explain how to implement code for the "Create a habit" UI based on our initial mock up. Given Prompt:"provide a walkthrough to explain how to implement code for the "Create a habit" page UI based on the given initial mock up"-->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -17,12 +17,12 @@
         <div class="divider"></div>
             <form id="habitForm" novalidate>
                 <div class="form-section">
-                    <label class ="form-label" for="habitName">Habit name</label>
+                    <label class="form-label" for="habitName">Habit name</label>
                     <input
                     class="form-input"
-                    type ="text"
+                    type="text"
                     id="habitName"
-                    placeholder="e.g. Morning,run, Journal..."
+                    placeholder="e.g. Morning run, Journal..."
                     maxLength="32"
                     autocomplete="off"
                     />
@@ -40,8 +40,43 @@
                         <button type ="button" class="emoji-opt" data-value ="💪">💪</button>
                         <button type ="button" class="emoji-opt" data-value ="✍️">✍️</button>
                     </div>
-                    <input type ="hidden" id="selectedIcon" value="🏃" />
+                    <input type ="hidden" id="selectedIcon" value="🏃"/>
+
+                <div class="form-section">
+                    <span class="form-label">Frequency</span>
+                    <div class ="freq-row" id="freqRow">
+                        <button type="button" class="freq-chip selected" data-value="daily">Daily</button>
+                        <button type="button" class="freq-chip" data-value="weekdays">Weekdays</button>
+                        <button type="button" class="freq-chip" data-value="weekly">Weekly</button>
+                        <button type="button" class="freq-chip" data-value="custom">Custom</button>
+                    </div>
+                    <input type="hidden" id="selectedFreq" value="daily"/>
+                <div class="form-section">
+                    <span class="form-label">Color</span>
+                    <div class="color-row" id="colorRow">
+                        <!--Claude helped idenity the proper hex value for the necessary colors-->
+                        <button type="button" class="color-dot selected" data-value="#534ab7" style="background:#534ab7;" aria-label="Purple"></button>
+                        <button type="button" class="color-dot" data-value="#1d9e75" style="background:#1d9e75;" aria-label="Green"></button>
+                        <button type="button" class="color-dot" data-value="#d85a30" style="background:#d85a30;" aria-label="Orange"></button>
+                        <button type="button" class="color-dot" data-value="#ba7517" style="background:#ba7517;" aria-label="Light Orange"></button>
+                        <button type="button" class="color-dot" data-value="#378add" style="background:#378add;" aria-label="Blue"></button>
+                        <button type="button" class="color-dot" data-value="#d4537e" style="background:#d4537e;" aria-label="Pink"></button>
+                    </div>
+                    <input type="hidden" id="selectedColor" value="#534ab7"/>
                 </div>
+                <div class="form-section">
+                    <label class="form-label" for="reminder">Reminder</label>
+                    <input
+                        class="form-input"
+                        type="time"
+                        id="reminder"
+                        value="7:00"
+                    />
+                </div>
+                <div class="form-section">
+                    <button type="submit" id="saveBtn" class="save-btn">Save Habit</button>
+                </div>
+            </div>
             </form>
         </div>
         <script src="script.js"></script>
