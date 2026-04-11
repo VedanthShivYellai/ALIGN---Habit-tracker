@@ -7,3 +7,5 @@ The HTML pages have example data on them but have not been implemented in terms 
 due to the lack of the API that has not beedn set up
 
 AI was primarily used on the HTML files to make the files more appealing and to fix any issues regarding any syntax as well as the Habit.py and Category.py to ensure no syntax errors and to fix any design issues regarding pythons capabilities
+
+The Main.py is not done yet, that is the file that will utilize firebase and the flask API, but not yet
