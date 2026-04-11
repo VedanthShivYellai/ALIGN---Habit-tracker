@@ -27,7 +27,7 @@ class Habit:
         # and so we had AI help us fix the issue of unncessary updates to timestamps
         self.created_at = created_at if created_at else datetime.now().isoformat()
 
-    def to_dict(self):
+    def getHabit(self):
         #Prepares the object to be saved to the database.
         return {
             "id": self.id,
