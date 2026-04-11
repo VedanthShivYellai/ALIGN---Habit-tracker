@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>New Habit</title>
     <link rel="stylesheet" href="styles.css"/>
-    </head>
+</head>
     <body>
         <div class="container">
             <div class="add-header">
@@ -31,30 +31,32 @@
                 <div class="form-section">
                     <span class="form-label">Icon</span>
                     <div class="emoji-grid" id="emojiGrid">
-                        <button type ="button" class="emoji-opt selected" data-value ="🏃">🏃</button>
-                        <button type ="button" class="emoji-opt" data-value ="💧">💧</button>
-                        <button type ="button" class="emoji-opt" data-value ="🧘">🧘</button>
-                        <button type ="button" class="emoji-opt" data-value ="📖">📖</button>
-                        <button type ="button" class="emoji-opt" data-value ="🥗">🥗</button>
-                        <button type ="button" class="emoji-opt" data-value ="🎯">🎯</button>
-                        <button type ="button" class="emoji-opt" data-value ="💪">💪</button>
-                        <button type ="button" class="emoji-opt" data-value ="✍️">✍️</button>
+                        <button type="button" class="emoji-opt selected" data-value="🏃">🏃</button>
+                        <button type="button" class="emoji-opt" data-value="💧">💧</button>
+                        <button type="button" class="emoji-opt" data-value="🧘">🧘</button>
+                        <button type="button" class="emoji-opt" data-value="📖">📖</button>
+                        <button type="button" class="emoji-opt" data-value="🥗">🥗</button>
+                        <button type="button" class="emoji-opt" data-value="🎯">🎯</button>
+                        <button type="button" class="emoji-opt" data-value="💪">💪</button>
+                        <button type="button" class="emoji-opt" data-value="✍️">✍️</button>
                     </div>
-                    <input type ="hidden" id="selectedIcon" value="🏃"/>
+                    <input type="hidden" id="selectedIcon" value="🏃"/>
+                </div>
 
                 <div class="form-section">
                     <span class="form-label">Frequency</span>
-                    <div class ="freq-row" id="freqRow">
+                    <div class="freq-row" id="freqRow">
                         <button type="button" class="freq-chip selected" data-value="daily">Daily</button>
                         <button type="button" class="freq-chip" data-value="weekdays">Weekdays</button>
                         <button type="button" class="freq-chip" data-value="weekly">Weekly</button>
                         <button type="button" class="freq-chip" data-value="custom">Custom</button>
                     </div>
                     <input type="hidden" id="selectedFreq" value="daily"/>
+                    </div>
                 <div class="form-section">
                     <span class="form-label">Color</span>
                     <div class="color-row" id="colorRow">
-                        <!--Claude helped idenity the proper hex value for the necessary colors-->
+                        <!--Claude helped idenity the proper hex value for the necessary colors, prompted to produce the hex values for each part of the UI-->
                         <button type="button" class="color-dot selected" data-value="#534ab7" style="background:#534ab7;" aria-label="Purple"></button>
                         <button type="button" class="color-dot" data-value="#1d9e75" style="background:#1d9e75;" aria-label="Green"></button>
                         <button type="button" class="color-dot" data-value="#d85a30" style="background:#d85a30;" aria-label="Orange"></button>
@@ -64,20 +66,21 @@
                     </div>
                     <input type="hidden" id="selectedColor" value="#534ab7"/>
                 </div>
+                <!--Claude derived code for how to implement the reminder and submit features-->
                 <div class="form-section">
                     <label class="form-label" for="reminder">Reminder</label>
                     <input
                         class="form-input"
                         type="time"
                         id="reminder"
-                        value="7:00"
+                        value="12:00"
                     />
                 </div>
                 <div class="form-section">
                     <button type="submit" id="saveBtn" class="save-btn">Save Habit</button>
                 </div>
-            </div>
             </form>
     </div>
         <script src="script.js"></script>
     </body>
+</html>
