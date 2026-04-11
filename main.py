@@ -1,5 +1,5 @@
 
-
+# This code had no AI use on it
 def add_habit(data):
     habit = Habit(data.get("id"),
             data.get("user_id"),
