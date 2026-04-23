@@ -21,12 +21,14 @@ def add_habit():
             data.get("alerts", []),
             data.get("current_streak", 0))
     db.collection(habit.user_id).document(habit.name).set(habit.getHabit())
+    return {"message": "Habit added successfully"}
     
 @app.route("/remove-habit", methods = ["POST"])
 def remove_habit():
     data = request.json
     habit = Habit.from_dict(data)
     db.collection(habit.user_id).document(habit.name).delete()
+    return {"message": "Habit removed successfully"}
 
     
     
