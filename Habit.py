@@ -15,7 +15,7 @@ class Habit:
 
         self.id = id if id else str(uuid.uuid4())
         self.user_id = user_id
-        self.name = str(name).strip()
+        self.name = str(name).strip().upper()
         self.category_id = category_id
         self.description = description
         self.goal_time = goal_time

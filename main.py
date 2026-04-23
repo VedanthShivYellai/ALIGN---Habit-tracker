@@ -18,7 +18,7 @@ def add_habit():
             data.get("recurrence"),
             data.get("alerts", []),
             data.get("current_streak", 0))
-    db.collection("User_Habits").document(habit.name).set(habit.getHabit())
+    db.collection(habit.user_id).document(habit.name).set(habit.getHabit())
     
 
 def remove_habit():
