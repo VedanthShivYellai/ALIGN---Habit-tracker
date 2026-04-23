@@ -6,8 +6,10 @@ from firebase_admin import credentials, firestore
 cred = credentials.Certificate("serviceAccountKey.json")
 align = firebase_admin.initialize_app(cred, name="ALIGN")
 db = firestore.client(app=align)
+app = Flask(__name__)
 
 # This code had no AI use on it
+@app.route("/add-habit", methods = ["POST"])
 def add_habit():
     data = request.json
     habit = Habit(data.get("id"),
@@ -20,11 +22,11 @@ def add_habit():
             data.get("current_streak", 0))
     db.collection(habit.user_id).document(habit.name).set(habit.getHabit())
     
-
+@app.route("/remove-habit", methods = ["POST"])
 def remove_habit():
     data = request.json
-    
-    user_ID = data.get("user_id")
+    habit = Habit.from_dict(data)
+    db.collection(habit.user_id).document(habit.name).delete()
 
     
     
