@@ -13,13 +13,13 @@ app = Flask(__name__)
 def add_habit():
     data = request.json
     habit = Habit(
-        user_id=data.get("user_id"),
-        name=data.get("name"),
-        category_id=data.get("category_id"),
-        goal_time=data.get("goal_time"),
-        recurrence=data.get("recurrence"),
-        alerts=data.get("alerts", []),
-        current_streak=data.get("current_streak", 0)
+        data.get("user_id"),
+        data.get("name"),
+        data.get("category_id"),
+        data.get("goal_time"),
+        data.get("recurrence"),
+        data.get("alerts", []),
+        data.get("current_streak", 0)
     )
     db.collection(habit.user_id).document(habit.name).set(habit.getHabit())
     return {"message": "Habit added successfully"}
