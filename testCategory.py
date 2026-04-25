@@ -1,3 +1,5 @@
+# AI GENERATED - Prompt: "Set everything up for testing based on the black box testing and the Category.py"
+# This really helped set everything up so that writing the tests was easier
 import pytest
 from datetime import datetime
 from Category import Category
