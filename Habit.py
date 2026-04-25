@@ -1,6 +1,8 @@
 import uuid
 from datetime import datetime
 
+#Claude AI helped with determining the proper place to add the valid_recurrence list
+valid_recurrences = {"daily", "weekdays", "weekly", "custom"}
 class Habit:
     # use keyword arguments for the optional fields with sensible defaults
     # defaults make habit creation easier for user
@@ -12,6 +14,11 @@ class Habit:
             raise ValueError("Habit name cannot be empty.")
         if not user_id:
             raise ValueError("Habit must be tied to a user_id.")
+        if recurrence not in valid_recurrences:
+            #Claude AI helped improve the formatting for the error message 
+            # and helped make it more dynamic. Initially I had a simple message with the valid recurrences
+            #listed out
+            raise ValueError(f"Invalid recurrence '{recurrence}'. Must be one of: {', '.join(sorted(valid_recurrences))}.")
 
         self.id = id if id else str(uuid.uuid4())
         self.user_id = user_id
