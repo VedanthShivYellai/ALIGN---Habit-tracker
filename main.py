@@ -36,4 +36,3 @@ def get_habitstats():
     return render_template("habit_stats.html")    
     
 
-
