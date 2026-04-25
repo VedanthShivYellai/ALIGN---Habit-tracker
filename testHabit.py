@@ -1,3 +1,5 @@
+# AI GENERATED - Prompt: "Set everything up for testing based on the black box testing and the Habit.py"
+# This really helped set everything up so that writing the tests was easier
 import pytest
 from unittest.mock import patch
 from datetime import datetime
