@@ -9,18 +9,16 @@ db = firestore.client(app=align)
 app = Flask(__name__)
 
 # This code had no AI use on it
-@app.route("/add-habit", methods=["POST"])
+@app.route("/add-habit", methods = ["POST"])
 def add_habit():
     data = request.json
-    habit = Habit(
-        data.get("user_id"),
-        data.get("name"),
-        data.get("category_id"),
-        data.get("goal_time"),
-        data.get("recurrence"),
-        data.get("alerts", []),
-        data.get("current_streak", 0)
-    )
+    habit = Habit(data.get("user_id"),
+            data.get("name"),
+            data.get("category_id"),
+            data.get("goal_time"),
+            data.get("recurrence"),
+            data.get("alerts", []),
+            data.get("current_streak", 0))
     db.collection(habit.user_id).document(habit.name).set(habit.getHabit())
     return {"message": "Habit added successfully"}
     
@@ -31,8 +29,7 @@ def remove_habit():
     db.collection(habit.user_id).document(habit.name).delete()
     return {"message": "Habit removed successfully"}
 
-@app.route("/")
-def get_habitstats():
-    return render_template("habit_stats.html")    
     
+    
+
 
