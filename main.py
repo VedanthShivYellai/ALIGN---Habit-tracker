@@ -25,15 +25,16 @@ def add_habit():
             data.get("recurrence"),
             data.get("alerts", []),
             data.get("current_streak", 0))
-    db.collection(habit.user_id).document(habit.name).set(habit.getHabit())
+    db.collection("User").document(habit.name).set(habit.getHabit())
     return {"message": "Habit added successfully"}
     
 @app.route("/remove-habit", methods = ["POST"])
 def remove_habit():
     data = request.json
     habit = Habit.from_dict(data)
-    db.collection(habit.user_id).document(habit.name).delete()
+    db.collection("User").document(habit.name).delete()
     return {"message": "Habit removed successfully"}
+
 
 # Gemini AI model was used to help safely pull the gemini api key, it did not write the code but for syntax aid and importing the right libraries
 load_dotenv()

@@ -6,14 +6,12 @@ valid_recurrences = {"daily", "weekdays", "weekly", "custom"}
 class Habit:
     # use keyword arguments for the optional fields with sensible defaults
     # defaults make habit creation easier for user
-    def __init__(self, user_id, name, category_id=None, description=None, goal_time="any", recurrence="daily", alerts=None, id=None, created_at=None, current_streak=0):
+    def __init__(self, name, category_id=None, description=None, goal_time="any", recurrence="daily", alerts=None, id=None, created_at=None, current_streak=0):
         
         # make sure there is a name
         # Gemini AI helped add the .strip() stuff
         if not name or not str(name).strip():
             raise ValueError("Habit name cannot be empty.")
-        if not user_id:
-            raise ValueError("Habit must be tied to a user_id.")
         if recurrence not in valid_recurrences:
             #Claude AI helped improve the formatting for the error message 
             # and helped make it more dynamic. Initially I had a simple message with the valid recurrences
@@ -21,7 +19,6 @@ class Habit:
             raise ValueError(f"Invalid recurrence '{recurrence}'. Must be one of: {', '.join(sorted(valid_recurrences))}.")
 
         self.id = id if id is not None else str(uuid.uuid4())
-        self.user_id = user_id
         self.name = str(name).strip().upper()
         self.category_id = category_id
         self.description = description
@@ -37,7 +34,6 @@ class Habit:
     def getHabit(self):
         #Prepares the object to be saved to the database.
         return {
-            "id": self.id,
             "user_id": self.user_id,
             "name": self.name,
             "category_id": self.category_id,
@@ -53,7 +49,6 @@ class Habit:
         #Rebuilds a Habit object from a raw dictionary.
         return cls(
             id=data.get("id"),
-            user_id=data.get("user_id"),
             name=data.get("name"),
             category_id=data.get("category_id"),
             goal_time=data.get("goal_time", "any"),
