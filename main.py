@@ -2,6 +2,8 @@ from flask import Flask, request, render_template, jsonify
 from Habit import Habit
 import firebase_admin
 from firebase_admin import credentials, firestore
+import os
+from dotenv import load_dotenv
 
 cred = credentials.Certificate("serviceAccountKey.json")
 align = firebase_admin.initialize_app(cred, name="ALIGN")
@@ -30,7 +32,13 @@ def remove_habit():
     db.collection(habit.user_id).document(habit.name).delete()
     return {"message": "Habit removed successfully"}
 
-    
-    
+# Gemini AI model was used to help safely pull the gemini api key, it did not write the code but for syntax aid and importing the right libraries
+load_dotenv()
+
+#retrieve key
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+
+if not GEMINI_API_KEY:
+    raise ValueError("No Gemini API key found. Check your .env file.")
 
 
