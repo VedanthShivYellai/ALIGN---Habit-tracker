@@ -8,6 +8,10 @@ align = firebase_admin.initialize_app(cred, name="ALIGN")
 db = firestore.client(app=align)
 app = Flask(__name__)
 
+@app.route("/")
+def home():
+    return render_template("home.html")
+
 # This code had no AI use on it
 @app.route("/add-habit", methods = ["POST"])
 def add_habit():
