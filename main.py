@@ -14,8 +14,7 @@ app = Flask(__name__)
 @app.route("/add-habit", methods = ["POST"])
 def add_habit():
     data = request.json
-    habit = Habit(data.get("id"),
-            data.get("user_id"),
+    habit = Habit(data.get("user_id"),
             data.get("name"),
             data.get("category_id"),
             data.get("goal_time"),

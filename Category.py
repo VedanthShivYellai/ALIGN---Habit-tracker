@@ -6,10 +6,10 @@ from datetime import datetime
 # retrive the category id
 
 class Category:
-    def __init__(self, name, user_id, color="#800080", icon="default", created_at=None):
+    def __init__(self, name, user_id, color="#800080", icon="default", id=None, created_at=None):
         if not name or not str(name).strip():
             raise ValueError("Category name cannot be empty.")
-        self.id = str(uuid.uuid4())
+        self.id = id if id else str(uuid.uuid4())
         self.name = str(name).strip()
         self.user_id = user_id
         self.color = color
