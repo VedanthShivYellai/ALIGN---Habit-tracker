@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ALIGN — Home</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #f0ede8;
+      --card-bg:   #ffffff;
+      --screen-bg: #ffffff;
+      --phone-bg:  #d3d1c7;
+      --border:    #d3d1c7;
+      --border-lt: #e8e6df;
+      --text-dark: #2c2c2a;
+      --text-mid:  #888780;
+      --text-lt:   #b4b2a9;
+      --purple:    #534ab7;
+      --purple-lt: #eeedfe;
+      --purple-dk: #3c3489;
+      --green:     #1d9e75;
+      --green-lt:  #d4f0e5;
+      --red:       #d94f4f;
+      --red-lt:    #fde8e8;
+      --orange:    #d85a30;
+      --input-bg:  #f4f2ee;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem 1rem 4rem;
+    }
+
+    /* ── Page header ── */
+    .page-header {
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+    .page-header h1 {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--text-dark);
+      letter-spacing: -0.02em;
+    }
+    .page-header .tagline {
+      font-size: 13px;
+      color: var(--text-mid);
+      margin-top: 4px;
+    }
+
+    /* ── Phone shell ── */
+    .phone-group {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .phone {
+      width: 295px;
+      background: var(--phone-bg);
+      border-radius: 40px;
+      border: 1px solid var(--border);
+      padding: 14px;
+      box-shadow: 0 6px 32px rgba(0,0,0,0.12);
+    }
+
+    .screen {
+      background: var(--screen-bg);
+      border-radius: 28px;
+      overflow: hidden;
+      min-height: 600px;
+      border: 0.5px solid var(--border-lt);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .screen-label {
+      font-size: 12px;
+      color: var(--text-mid);
+      letter-spacing: 0.03em;
+    }
+
+    /* ── Status bar ── */
+    .status-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 18px 6px;
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--text-mid);
+    }
+
+    /* ── Top nav ── */
+    .top-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 6px 16px 10px;
+    }
+    .nav-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text-dark);
+      letter-spacing: -0.02em;
+    }
+    .nav-title span { color: var(--purple); }
+    .nav-icon-btn {
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      background: var(--input-bg);
+      border: 0.5px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 15px; cursor: pointer;
+      transition: background 0.15s;
+    }
+    .nav-icon-btn:hover { background: var(--purple-lt); }
+
+    /* ── Scrollable content ── */
+    .screen-scroll {
+      flex: 1;
+      overflow-y: auto;
+      padding-bottom: 6px;
+    }
+    .screen-scroll::-webkit-scrollbar { display: none; }
+
+    /* ── Date + greeting ── */
+    .greeting {
+      padding: 4px 16px 12px;
+    }
+    .greeting-date {
+      font-size: 11px;
+      color: var(--text-mid);
+      margin-bottom: 2px;
+    }
+    .greeting-text {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-dark);
+    }
+
+    /* ── Daily progress card ── */
+    .progress-card {
+      margin: 0 16px 14px;
+      background: var(--purple);
+      border-radius: 16px;
+      padding: 14px 16px;
+      color: #fff;
+      position: relative;
+      overflow: hidden;
+    }
+    .progress-card::before {
+      content: '';
+      position: absolute;
+      top: -20px; right: -20px;
+      width: 90px; height: 90px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.08);
+    }
+    .progress-card::after {
+      content: '';
+      position: absolute;
+      bottom: -30px; right: 20px;
+      width: 70px; height: 70px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.05);
+    }
+    .progress-label { font-size: 10px; font-weight: 600; opacity: 0.8; letter-spacing: 0.06em; text-transform: uppercase; }
+    .progress-count { font-size: 26px; font-weight: 700; margin: 4px 0 6px; letter-spacing: -0.02em; }
+    .progress-count span { font-size: 14px; font-weight: 400; opacity: 0.7; }
+    .progress-bar-track {
+      background: rgba(255,255,255,0.2);
+      border-radius: 99px;
+      height: 6px;
+      margin-bottom: 8px;
+    }
+    .progress-bar-fill {
+      background: #fff;
+      border-radius: 99px;
+      height: 6px;
+      width: 60%; /* JS updates this */
+      transition: width 0.6s ease;
+    }
+    .progress-sub { font-size: 11px; opacity: 0.75; }
+
+    /* ── Streak row ── */
+    .streak-row {
+      display: flex;
+      gap: 8px;
+      padding: 0 16px 14px;
+    }
+    .streak-card {
+      flex: 1;
+      background: var(--input-bg);
+      border-radius: 12px;
+      padding: 10px;
+      text-align: center;
+      border: 0.5px solid var(--border);
+    }
+    .streak-icon { font-size: 16px; }
+    .streak-num {
+      font-size: 19px;
+      font-weight: 700;
+      color: var(--text-dark);
+      margin: 2px 0 1px;
+    }
+    .streak-lbl { font-size: 9px; color: var(--text-mid); font-weight: 500; text-transform: uppercase; letter-spacing: 0.05em; }
+
+    /* ── Section header ── */
+    .section-hdr {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 16px 8px;
+    }
+    .section-title { font-size: 12px; font-weight: 600; color: var(--text-dark); }
+    .section-link { font-size: 11px; color: var(--purple); cursor: pointer; }
+
+    /* ── Habit cards ── */
+    .habits-list { padding: 0 16px; display: flex; flex-direction: column; gap: 8px; }
+
+    .habit-card {
+      background: var(--input-bg);
+      border-radius: 14px;
+      border: 0.5px solid var(--border);
+      padding: 11px 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      transition: background 0.15s, box-shadow 0.15s;
+      position: relative;
+    }
+    .habit-card:hover { background: #ebe9e2; }
+    .habit-card.completed { border-color: #5dcaa5; background: #edfbf6; }
+
+    .habit-icon-wrap {
+      width: 38px; height: 38px;
+      border-radius: 11px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 19px;
+      flex-shrink: 0;
+    }
+
+    .habit-info { flex: 1; min-width: 0; }
+    .habit-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-dark);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .habit-meta { display: flex; gap: 6px; align-items: center; margin-top: 2px; }
+    .habit-freq {
+      font-size: 10px;
+      color: var(--text-mid);
+    }
+    .habit-streak-badge {
+      display: flex; align-items: center; gap: 2px;
+      font-size: 10px; font-weight: 600;
+      color: var(--orange);
+      background: #fdf0ea;
+      border-radius: 6px;
+      padding: 1px 5px;
+    }
+
+    .habit-check {
+      width: 26px; height: 26px;
+      border-radius: 8px;
+      border: 1.5px solid var(--border);
+      background: var(--card-bg);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px;
+      color: transparent;
+      cursor: pointer;
+      transition: background 0.15s, border-color 0.15s, color 0.15s;
+      flex-shrink: 0;
+    }
+    .habit-card.completed .habit-check {
+      background: var(--green);
+      border-color: var(--green);
+      color: #fff;
+    }
+
+    /* ── Quick actions ── */
+    .actions-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      padding: 14px 16px 6px;
+    }
+    .action-btn {
+      border-radius: 14px;
+      padding: 12px 10px;
+      border: 0.5px solid var(--border);
+      background: var(--input-bg);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      font-family: inherit;
+      transition: background 0.15s, transform 0.1s;
+      text-decoration: none;
+    }
+    .action-btn:hover { background: #ebe9e2; }
+    .action-btn:active { transform: scale(0.97); }
+    .action-btn.primary {
+      background: var(--purple-lt);
+      border-color: var(--purple);
+    }
+    .action-btn.primary:hover { background: #dddcf9; }
+    .action-icon {
+      width: 30px; height: 30px;
+      border-radius: 9px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 15px;
+      background: var(--card-bg);
+      flex-shrink: 0;
+    }
+    .action-btn.primary .action-icon { background: var(--purple); }
+    .action-text-wrap { min-width: 0; }
+    .action-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-dark);
+      display: block;
+    }
+    .action-btn.primary .action-label { color: var(--purple-dk); }
+    .action-sublabel {
+      font-size: 9px;
+      color: var(--text-mid);
+      display: block;
+    }
+
+    /* ── Bottom tab bar ── */
+    .tab-bar {
+      display: flex;
+      justify-content: space-around;
+      padding: 10px 0 14px;
+      border-top: 0.5px solid var(--border-lt);
+    }
+    .tab {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      font-size: 9px;
+      color: var(--text-lt);
+      cursor: pointer;
+      padding: 0 10px;
+      transition: color 0.15s;
+    }
+    .tab.active { color: var(--purple); }
+    .tab-icon { font-size: 18px; }
+    .tab-dot {
+      width: 4px; height: 4px;
+      border-radius: 50%;
+      background: var(--purple);
+      margin: 0 auto;
+    }
+
+    /* ── Empty state ── */
+    .empty-state {
+      text-align: center;
+      padding: 24px 16px;
+      color: var(--text-mid);
+    }
+    .empty-state .empty-icon { font-size: 30px; margin-bottom: 8px; }
+    .empty-state p { font-size: 12px; line-height: 1.5; }
+
+    /* ── Modal overlay ── */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.4);
+      z-index: 100;
+      align-items: flex-end;
+      justify-content: center;
+    }
+    .modal-overlay.open { display: flex; }
+
+    .modal-sheet {
+      background: var(--card-bg);
+      border-radius: 24px 24px 0 0;
+      padding: 20px 20px 32px;
+      width: 100%;
+      max-width: 340px;
+      animation: slideUp 0.25s ease;
+    }
+    @keyframes slideUp {
+      from { transform: translateY(40px); opacity: 0; }
+      to   { transform: translateY(0);    opacity: 1; }
+    }
+    .modal-handle {
+      width: 36px; height: 4px;
+      background: var(--border);
+      border-radius: 99px;
+      margin: 0 auto 16px;
+    }
+    .modal-title {
+      font-size: 15px; font-weight: 700; color: var(--text-dark);
+      margin-bottom: 14px;
+    }
+    .modal-form-label {
+      display: block;
+      font-size: 10px; font-weight: 700;
+      color: var(--text-mid);
+      text-transform: uppercase; letter-spacing: 0.07em;
+      margin-bottom: 5px;
+    }
+    .modal-input {
+      width: 100%;
+      background: var(--input-bg);
+      border: 0.5px solid var(--border);
+      border-radius: 10px;
+      padding: 9px 11px;
+      font-size: 13px;
+      color: var(--text-dark);
+      font-family: inherit;
+      outline: none;
+      margin-bottom: 12px;
+      transition: border-color 0.2s;
+    }
+    .modal-input:focus { border-color: var(--purple); }
+    .modal-input::placeholder { color: var(--text-lt); }
+
+    .modal-freq-row { display: flex; gap: 5px; margin-bottom: 14px; }
+    .modal-chip {
+      flex: 1; padding: 7px 0;
+      border-radius: 8px;
+      background: var(--input-bg);
+      border: 0.5px solid var(--border);
+      font-size: 10px; font-weight: 600;
+      color: var(--text-mid);
+      text-align: center;
+      cursor: pointer; font-family: inherit;
+      transition: background 0.15s, border 0.15s, color 0.15s;
+    }
+    .modal-chip.sel {
+      background: var(--purple-lt);
+      border: 1.5px solid var(--purple);
+      color: var(--purple-dk);
+    }
+
+    .modal-emoji-row { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 14px; }
+    .modal-emoji {
+      width: 36px; height: 36px;
+      border-radius: 10px;
+      background: var(--input-bg);
+      border: 0.5px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px; cursor: pointer;
+      transition: transform 0.12s, border 0.12s;
+    }
+    .modal-emoji.sel { border: 2px solid var(--purple); background: var(--purple-lt); }
+    .modal-emoji:hover { transform: scale(1.1); }
+
+    .modal-actions { display: flex; gap: 8px; margin-top: 4px; }
+    .modal-cancel {
+      flex: 1; padding: 11px;
+      border: 0.5px solid var(--border);
+      border-radius: 12px;
+      background: var(--input-bg);
+      font-size: 13px; font-weight: 600;
+      color: var(--text-mid);
+      cursor: pointer; font-family: inherit;
+    }
+    .modal-save {
+      flex: 2; padding: 11px;
+      border: none;
+      border-radius: 12px;
+      background: var(--purple);
+      font-size: 13px; font-weight: 700;
+      color: #fff;
+      cursor: pointer; font-family: inherit;
+      transition: background 0.15s;
+    }
+    .modal-save:hover { background: var(--purple-dk); }
+    .modal-save:disabled { background: #b0a8e8; cursor: not-allowed; }
+  </style>
+</head>
+<body>
+
+  <div class="page-header">
+    <h1>ALIGN</h1>
+    <p class="tagline">Your habit dashboard</p>
+  </div>
+
+  <div class="phone-group">
+    <div class="phone">
+      <div class="screen">
+
+        <!-- Status bar -->
+        <div class="status-bar">
+          <span id="statusTime">9:41</span>
+          <span>●●●</span>
+        </div>
+
+        <!-- Top nav -->
+        <div class="top-nav">
+          <div class="nav-title">ALIGN<span>.</span></div>
+          <button class="nav-icon-btn" title="Settings">⚙️</button>
+        </div>
+
+        <!-- Scrollable body -->
+        <div class="screen-scroll">
+
+          <!-- Greeting -->
+          <div class="greeting">
+            <div class="greeting-date" id="greetDate"></div>
+            <div class="greeting-text" id="greetText">Good morning! 👋</div>
+          </div>
+
+          <!-- Daily progress card -->
+          <div class="progress-card">
+            <div class="progress-label">Today's Progress</div>
+            <div class="progress-count" id="progressCount">0 <span>/ 0 done</span></div>
+            <div class="progress-bar-track">
+              <div class="progress-bar-fill" id="progressBar" style="width:0%"></div>
+            </div>
+            <div class="progress-sub" id="progressSub">Complete your habits to build your streak!</div>
+          </div>
+
+          <!-- Streak summary row -->
+          <div class="streak-row">
+            <div class="streak-card">
+              <div class="streak-icon">🔥</div>
+              <div class="streak-num" id="bestStreak">0</div>
+              <div class="streak-lbl">Best Streak</div>
+            </div>
+            <div class="streak-card">
+              <div class="streak-icon">⚡</div>
+              <div class="streak-num" id="activeHabits">0</div>
+              <div class="streak-lbl">Active Habits</div>
+            </div>
+            <div class="streak-card">
+              <div class="streak-icon">✅</div>
+              <div class="streak-num" id="totalDone">0</div>
+              <div class="streak-lbl">Done Today</div>
+            </div>
+          </div>
+
+          <!-- Quick actions -->
+          <div class="actions-grid">
+            <button class="action-btn primary" onclick="openAddModal()">
+              <div class="action-icon">➕</div>
+              <div class="action-text-wrap">
+                <span class="action-label">Add Habit</span>
+                <span class="action-sublabel">Track something new</span>
+              </div>
+            </button>
+            <a class="action-btn" href="/stats" onclick="return false;">
+              <div class="action-icon">📊</div>
+              <div class="action-text-wrap">
+                <span class="action-label">View Stats</span>
+                <span class="action-sublabel">Streaks &amp; history</span>
+              </div>
+            </a>
+            <button class="action-btn" onclick="openEditMode()">
+              <div class="action-icon">✏️</div>
+              <div class="action-text-wrap">
+                <span class="action-label">Edit Habits</span>
+                <span class="action-sublabel">Reorder or remove</span>
+              </div>
+            </button>
+            <button class="action-btn" onclick="alert('Reminders coming soon!')">
+              <div class="action-icon">🔔</div>
+              <div class="action-text-wrap">
+                <span class="action-label">Reminders</span>
+                <span class="action-sublabel">Set daily alerts</span>
+              </div>
+            </button>
+          </div>
+
+          <!-- Today's habits -->
+          <div class="section-hdr" style="margin-top:10px;">
+            <span class="section-title">Today's Habits</span>
+            <span class="section-link" onclick="openAddModal()">+ Add</span>
+          </div>
+
+          <div class="habits-list" id="habitsList">
+            <!-- Populated by JS -->
+          </div>
+
+        </div><!-- /screen-scroll -->
+
+        <!-- Bottom tab bar -->
+        <div class="tab-bar">
+          <div class="tab active">
+            <div class="tab-icon">🏠</div>
+            <span>Home</span>
+            <div class="tab-dot"></div>
+          </div>
+          <div class="tab">
+            <div class="tab-icon">📅</div>
+            <span>Calendar</span>
+          </div>
+          <div class="tab">
+            <div class="tab-icon">📊</div>
+            <span>Stats</span>
+          </div>
+          <div class="tab">
+            <div class="tab-icon">👤</div>
+            <span>Profile</span>
+          </div>
+        </div>
+
+      </div><!-- /screen -->
+    </div><!-- /phone -->
+    <div class="screen-label">Home dashboard</div>
+  </div>
+
+  <!-- Add Habit Modal -->
+  <div class="modal-overlay" id="addModal">
+    <div class="modal-sheet">
+      <div class="modal-handle"></div>
+      <div class="modal-title">New Habit</div>
+
+      <label class="modal-form-label" for="modalName">Habit name</label>
+      <input class="modal-input" type="text" id="modalName" placeholder="e.g. Morning run, Journal…" maxlength="32" autocomplete="off"/>
+
+      <label class="modal-form-label">Icon</label>
+      <div class="modal-emoji-row" id="modalEmojis">
+        <div class="modal-emoji sel" data-val="🏃">🏃</div>
+        <div class="modal-emoji" data-val="💧">💧</div>
+        <div class="modal-emoji" data-val="🧘">🧘</div>
+        <div class="modal-emoji" data-val="📖">📖</div>
+        <div class="modal-emoji" data-val="🥗">🥗</div>
+        <div class="modal-emoji" data-val="🎯">🎯</div>
+        <div class="modal-emoji" data-val="💪">💪</div>
+        <div class="modal-emoji" data-val="✍️">✍️</div>
+      </div>
+
+      <label class="modal-form-label">Frequency</label>
+      <div class="modal-freq-row" id="modalFreq">
+        <button class="modal-chip sel" data-val="daily">Daily</button>
+        <button class="modal-chip" data-val="weekdays">Weekdays</button>
+        <button class="modal-chip" data-val="weekly">Weekly</button>
+      </div>
+
+      <div class="modal-actions">
+        <button class="modal-cancel" onclick="closeAddModal()">Cancel</button>
+        <button class="modal-save" id="modalSaveBtn" onclick="saveHabit()">Save Habit</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ── Sample habit data (replace with Jinja template vars when backend ready) ──
+    // When Flask serves this page, swap this block with:
+    //   const habits = {{ habits | tojson }};
+    let habits = [
+      { id: '1', name: 'Morning Run',        icon: '🏃', recurrence: 'daily',    current_streak: 7,  color: '#534ab7', done: true  },
+      { id: '2', name: 'Read 20 pages',      icon: '📖', recurrence: 'daily',    current_streak: 3,  color: '#1d9e75', done: false },
+      { id: '3', name: 'Drink Water',        icon: '💧', recurrence: 'daily',    current_streak: 12, color: '#378add', done: true  },
+      { id: '4', name: 'Evening Meditation', icon: '🧘', recurrence: 'weekdays', current_streak: 5,  color: '#d85a30', done: false },
+      { id: '5', name: 'Journal',            icon: '✍️', recurrence: 'daily',    current_streak: 2,  color: '#d4537e', done: false },
+    ];
+
+    let selectedEmoji = '🏃';
+    let selectedFreq  = 'daily';
+
+    // ── Clock & greeting ──
+    function updateClock() {
+      const now = new Date();
+      const h = String(now.getHours()).padStart(2,'0');
+      const m = String(now.getMinutes()).padStart(2,'0');
+      document.getElementById('statusTime').textContent = `${h}:${m}`;
+
+      const days   = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+      const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      document.getElementById('greetDate').textContent =
+        `${days[now.getDay()]}, ${months[now.getMonth()]} ${now.getDate()}`;
+
+      const hr = now.getHours();
+      let greet = hr < 12 ? 'Good morning! 👋' : hr < 17 ? 'Good afternoon! ☀️' : 'Good evening! 🌙';
+      document.getElementById('greetText').textContent = greet;
+    }
+    updateClock();
+    setInterval(updateClock, 30000);
+
+    // ── Render habits ──
+    function renderHabits() {
+      const list = document.getElementById('habitsList');
+
+      if (habits.length === 0) {
+        list.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-icon">🌱</div>
+            <p>No habits yet.<br>Tap <strong>+ Add</strong> to start building your streak!</p>
+          </div>`;
+        updateStats();
+        return;
+      }
+
+      list.innerHTML = habits.map(h => {
+        const iconBg = h.color + '22';
+        return `
+          <div class="habit-card ${h.done ? 'completed' : ''}" id="card-${h.id}" onclick="toggleHabit('${h.id}')">
+            <div class="habit-icon-wrap" style="background:${iconBg}">${h.icon}</div>
+            <div class="habit-info">
+              <div class="habit-name">${h.name}</div>
+              <div class="habit-meta">
+                <span class="habit-freq">${capitalise(h.recurrence)}</span>
+                ${h.current_streak > 0
+                  ? `<span class="habit-streak-badge">🔥 ${h.current_streak}</span>`
+                  : ''}
+              </div>
+            </div>
+            <div class="habit-check">${h.done ? '✓' : ''}</div>
+          </div>`;
+      }).join('');
+
+      updateStats();
+    }
+
+    function capitalise(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+
+    // ── Toggle completion ──
+    function toggleHabit(id) {
+      const h = habits.find(x => x.id === id);
+      if (!h) return;
+      h.done = !h.done;
+      if (h.done) h.current_streak += 1;
+      else if (h.current_streak > 0) h.current_streak -= 1;
+      renderHabits();
+      // TODO: POST /toggle-habit { id } to Flask backend
+    }
+
+    // ── Stats ──
+    function updateStats() {
+      const done  = habits.filter(h => h.done).length;
+      const total = habits.length;
+      const pct   = total ? Math.round((done / total) * 100) : 0;
+      const best  = habits.reduce((m, h) => Math.max(m, h.current_streak), 0);
+
+      document.getElementById('progressCount').innerHTML =
+        `${done} <span>/ ${total} done</span>`;
+      document.getElementById('progressBar').style.width = pct + '%';
+      document.getElementById('progressSub').textContent =
+        pct === 100 ? '🎉 All habits done — amazing day!' :
+        pct >= 50   ? `${pct}% done — keep the momentum!` :
+        `${pct}% done — you got this!`;
+
+      document.getElementById('bestStreak').textContent  = best;
+      document.getElementById('activeHabits').textContent = total;
+      document.getElementById('totalDone').textContent   = done;
+    }
+
+    // ── Add habit modal ──
+    function openAddModal() {
+      document.getElementById('modalName').value = '';
+      document.getElementById('addModal').classList.add('open');
+      document.getElementById('modalName').focus();
+    }
+    function closeAddModal() {
+      document.getElementById('addModal').classList.remove('open');
+    }
+
+    // Emoji picker
+    document.querySelectorAll('.modal-emoji').forEach(el => {
+      el.addEventListener('click', () => {
+        document.querySelectorAll('.modal-emoji').forEach(e => e.classList.remove('sel'));
+        el.classList.add('sel');
+        selectedEmoji = el.dataset.val;
+      });
+    });
+
+    // Freq chips
+    document.querySelectorAll('.modal-chip').forEach(el => {
+      el.addEventListener('click', () => {
+        document.querySelectorAll('.modal-chip').forEach(e => e.classList.remove('sel'));
+        el.classList.add('sel');
+        selectedFreq = el.dataset.val;
+      });
+    });
+
+    function saveHabit() {
+      const nameEl = document.getElementById('modalName');
+      const name   = nameEl.value.trim();
+      if (!name) { nameEl.focus(); nameEl.style.borderColor = '#d85a30'; return; }
+      nameEl.style.borderColor = '';
+
+      const colors = ['#534ab7','#1d9e75','#d85a30','#378add','#d4537e','#ba7517'];
+      const color  = colors[habits.length % colors.length];
+
+      const newHabit = {
+        id: Date.now().toString(),
+        name,
+        icon: selectedEmoji,
+        recurrence: selectedFreq,
+        current_streak: 0,
+        color,
+        done: false,
+      };
+
+      habits.push(newHabit);
+      renderHabits();
+      closeAddModal();
+
+      // TODO: POST /add-habit { user_id, name, recurrence, icon, color } to Flask backend
+    }
+
+    // Close modal on overlay click
+    document.getElementById('addModal').addEventListener('click', function(e) {
+      if (e.target === this) closeAddModal();
+    });
+
+    // ── Edit mode (stub) ──
+    function openEditMode() {
+      alert('Edit mode coming soon!\n\nThis will allow you to reorder and delete habits.');
+    }
+
+    // ── Initial render ──
+    renderHabits();
+  </script>
+
+</body>
+</html>
