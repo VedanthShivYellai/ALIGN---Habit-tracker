@@ -225,7 +225,24 @@
     .section-link { font-size: 11px; color: var(--purple); cursor: pointer; }
 
     /* ── Habit cards ── */
-    .habits-list { padding: 0 16px; display: flex; flex-direction: column; gap: 8px; }
+    .habits-list {
+      padding: 0 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      max-height: 240px;
+      overflow-y: auto;
+      /* small inner scrollbar styling */
+      scrollbar-width: thin;
+      scrollbar-color: #c7c4ba transparent;
+    }
+    .habits-list::-webkit-scrollbar { width: 5px; }
+    .habits-list::-webkit-scrollbar-track { background: transparent; }
+    .habits-list::-webkit-scrollbar-thumb {
+      background: #c7c4ba;
+      border-radius: 3px;
+    }
+    .habits-list::-webkit-scrollbar-thumb:hover { background: #a8a59a; }
 
     .habit-card {
       background: var(--input-bg);
