@@ -504,6 +504,57 @@
     }
     .modal-save:hover { background: var(--purple-dk); }
     .modal-save:disabled { background: #b0a8e8; cursor: not-allowed; }
+
+    /* ── Habit actions popup ── */
+    .actions-sheet {
+      background: var(--card-bg);
+      border-radius: 24px 24px 0 0;
+      padding: 18px 20px 28px;
+      width: 100%;
+      max-width: 340px;
+      animation: slideUp 0.25s ease;
+    }
+    .actions-habit-row {
+      display: flex; align-items: center; gap: 10px;
+      padding: 6px 0 14px;
+      border-bottom: 0.5px solid var(--border-lt);
+      margin-bottom: 12px;
+    }
+    .actions-habit-icon {
+      width: 36px; height: 36px;
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+    .actions-habit-name {
+      font-size: 14px; font-weight: 700; color: var(--text-dark);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .actions-habit-meta {
+      font-size: 10px; color: var(--text-mid); margin-top: 1px;
+    }
+    .actions-btn {
+      width: 100%;
+      padding: 11px;
+      border: 0.5px solid var(--border);
+      border-radius: 12px;
+      background: var(--input-bg);
+      font-size: 13px; font-weight: 600;
+      color: var(--text-dark);
+      cursor: pointer; font-family: inherit;
+      display: flex; align-items: center; justify-content: center; gap: 6px;
+      margin-bottom: 8px;
+      transition: background 0.15s;
+    }
+    .actions-btn:hover { background: #ebe9e2; }
+    .actions-btn.danger {
+      background: var(--red-lt);
+      border-color: #f3c4c4;
+      color: var(--red);
+    }
+    .actions-btn.danger:hover { background: #fbd4d4; }
+    .actions-btn.danger:disabled { opacity: 0.6; cursor: not-allowed; }
   </style>
 </head>
 <body>
@@ -672,6 +723,24 @@
     </div>
   </div>
 
+  <!-- Habit Actions Popup -->
+  <div class="modal-overlay" id="actionsModal">
+    <div class="actions-sheet">
+      <div class="modal-handle"></div>
+      <div class="actions-habit-row">
+        <div class="actions-habit-icon" id="actionsIcon">🎯</div>
+        <div style="flex:1; min-width:0;">
+          <div class="actions-habit-name" id="actionsName">Habit</div>
+          <div class="actions-habit-meta" id="actionsMeta">Daily</div>
+        </div>
+      </div>
+      <button class="actions-btn danger" id="actionsRemoveBtn" onclick="removeHabit()">
+        🗑 Remove habit
+      </button>
+      <button class="actions-btn" onclick="closeHabitActions()">Cancel</button>
+    </div>
+  </div>
+
   <script>
     // ── Local habit state ──
     // Starts empty; populated by saveHabit() after a successful POST.
@@ -716,8 +785,10 @@
 
       list.innerHTML = habits.map(h => {
         const iconBg = (h.color || '#534ab7') + '22';
+        // Tap card body  → opens habit actions popup
+        // Tap checkbox  → toggles completion (event.stopPropagation prevents card from also firing)
         return `
-          <div class="habit-card ${h.done ? 'completed' : ''}" id="card-${h.id}" onclick="toggleHabit('${h.id}')">
+          <div class="habit-card ${h.done ? 'completed' : ''}" id="card-${h.id}" onclick="openHabitActions('${h.id}')">
             <div class="habit-icon-wrap" style="background:${iconBg}">${h.icon}</div>
             <div class="habit-info">
               <div class="habit-name">${h.name}</div>
@@ -728,7 +799,7 @@
                   : ''}
               </div>
             </div>
-            <div class="habit-check">${h.done ? '✓' : ''}</div>
+            <div class="habit-check" onclick="event.stopPropagation(); toggleHabit('${h.id}')">${h.done ? '✓' : ''}</div>
           </div>`;
       }).join('');
 
@@ -747,6 +818,72 @@
       renderHabits();
       // TODO: POST /toggle-habit { name } to Flask backend
     }
+
+    // ── Habit actions popup (Remove etc.) ──
+    let activeHabitId = null;
+
+    function openHabitActions(id) {
+      const h = habits.find(x => x.id === id);
+      if (!h) return;
+      activeHabitId = id;
+
+      const iconEl = document.getElementById('actionsIcon');
+      iconEl.textContent = h.icon;
+      iconEl.style.background = (h.color || '#534ab7') + '22';
+
+      document.getElementById('actionsName').textContent = h.name;
+      document.getElementById('actionsMeta').textContent =
+        `${capitalise(h.recurrence)} · 🔥 ${h.current_streak}`;
+
+      document.getElementById('actionsModal').classList.add('open');
+    }
+
+    function closeHabitActions() {
+      document.getElementById('actionsModal').classList.remove('open');
+      activeHabitId = null;
+    }
+
+    async function removeHabit() {
+      if (!activeHabitId) return;
+      const h = habits.find(x => x.id === activeHabitId);
+      if (!h) return;
+
+      if (!confirm(`Remove "${h.name}"? This cannot be undone.`)) return;
+
+      const btn = document.getElementById('actionsRemoveBtn');
+      btn.disabled = true;
+      btn.textContent = 'Removing...';
+
+      try {
+        const res = await fetch('/remove-habit', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name: h.name }),
+        });
+        const result = await res.json();
+
+        if (!res.ok || !result.ok) {
+          alert('Could not remove habit: ' + (result.error || 'Unknown error'));
+          return;
+        }
+
+        // Remove from local array, re-render, close popup
+        habits = habits.filter(x => x.id !== activeHabitId);
+        renderHabits();
+        closeHabitActions();
+      } catch (err) {
+        alert('Network error: could not reach the server.');
+        console.error(err);
+      } finally {
+        btn.disabled = false;
+        btn.textContent = '🗑 Remove habit';
+      }
+    }
+
+    // Close actions popup on overlay click
+    document.getElementById('actionsModal').addEventListener('click', function(e) {
+      if (e.target === this) closeHabitActions();
+    });
 
     // ── Stats ──
     function updateStats() {

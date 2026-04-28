@@ -56,6 +56,9 @@ def get_habits():
     habits = [doc.to_dict() for doc in docs]
     return jsonify({"habits": habits}), 200
 
+@app.route("/habit_stats", methods=["GET"])
+def getHabit_stats():
+    return render_template("habit_stats.html")
 
 if __name__ == "__main__":
     app.run(debug=True)
