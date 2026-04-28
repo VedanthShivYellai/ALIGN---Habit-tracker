@@ -17,7 +17,7 @@ def home():
 
 @app.route("/add-habit", methods=["POST"])
 def add_habit():
-    data = request.get_json(silent=True) or {}
+    data = request.json or {}
     try:
         habit = Habit(
             name=data.get("name"),
@@ -40,7 +40,7 @@ def add_habit():
 
 @app.route("/remove-habit", methods=["POST"])
 def remove_habit():
-    data = request.get_json(silent=True) or {}
+    data = request.json or {}
     name = data.get("name")
     if not name:
         return jsonify({"ok": False, "error": "Missing habit name"}), 400
@@ -56,9 +56,6 @@ def get_habits():
     habits = [doc.to_dict() for doc in docs]
     return jsonify({"habits": habits}), 200
 
-@app.route("/habit_stats", methods=["GET"])
-def getHabit_stats():
-    return render_template("habit_stats.html")
 
 if __name__ == "__main__":
     app.run(debug=True)
