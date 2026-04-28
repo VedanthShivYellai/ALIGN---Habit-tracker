@@ -2,7 +2,6 @@ from flask import Flask, request, render_template, jsonify
 from Habit import Habit
 import firebase_admin
 from firebase_admin import credentials, firestore
-import os
 
 
 cred = credentials.Certificate("serviceAccountKey.json")
