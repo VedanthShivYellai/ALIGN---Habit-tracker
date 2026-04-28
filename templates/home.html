@@ -866,8 +866,38 @@
       alert('Edit mode coming soon!\n\nThis will allow you to reorder and delete habits.');
     }
 
-    // ── Initial render ──
-    renderHabits();
+    // ── Load habits from backend (called on page load) ──
+    async function loadHabits() {
+      try {
+        const res = await fetch('/get-habits');
+        if (!res.ok) {
+          console.error('Failed to fetch habits, status:', res.status);
+          renderHabits(); // still render the empty state
+          return;
+        }
+        const data = await res.json();
+
+        // Map backend habits into the shape the UI expects.
+        // `done` doesn't exist on the backend (yet), so default to false.
+        habits = (data.habits || []).map(h => ({
+          id: h.id,
+          name: h.name,
+          icon: h.icon || '🎯',
+          recurrence: h.recurrence || 'daily',
+          current_streak: h.current_streak || 0,
+          color: h.color || '#534ab7',
+          done: false,
+        }));
+
+        renderHabits();
+      } catch (err) {
+        console.error('Network error loading habits:', err);
+        renderHabits(); // fall back to empty state on network failure
+      }
+    }
+
+    // ── Initial load ──
+    loadHabits();
   </script>
 
 </body>
