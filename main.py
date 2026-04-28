@@ -9,37 +9,53 @@ align = firebase_admin.initialize_app(cred, name="ALIGN")
 db = firestore.client(app=align)
 app = Flask(__name__)
 
+
 @app.route("/")
 def home():
     return render_template("home.html")
 
-# This code had no AI use on it
-@app.route("/add-habit", methods = ["POST"])
+
+@app.route("/add-habit", methods=["POST"])
 def add_habit():
-    data = request.json
-    habit = Habit(data.get("user_id"),
-            data.get("name"),
-            data.get("category_id"),
-            data.get("goal_time"),
-            data.get("recurrence"),
-            data.get("alerts", []),
-            data.get("current_streak", 0))
-    db.collection("User").document(habit.name).set(habit.getHabit())
-    return {"message": "Habit added successfully"}
-    
-@app.route("/remove-habit", methods = ["POST"])
+    data = request.get_json(silent=True) or {}
+    try:
+        habit = Habit(
+            name=data.get("name"),
+            category_id=data.get("category_id"),
+            description=data.get("description"),
+            goal_time=data.get("goal_time", "any"),
+            recurrence=data.get("recurrence", "daily"),
+            alerts=data.get("alerts", []),
+            icon=data.get("icon", "🎯"),
+            color=data.get("color", "#534ab7"),
+        )
+    except ValueError as e:
+        return jsonify({"ok": False, "error": str(e)}), 400
+
+    # Doc ID = habit name (uppercased by the model).
+    # Note: saving a habit with an existing name will overwrite the old one.
+    db.collection("Habits").document(habit.name).set(habit.getHabit())
+    return jsonify({"ok": True, "habit": habit.getHabit()}), 201
+
+
+@app.route("/remove-habit", methods=["POST"])
 def remove_habit():
-    data = request.json
-    habit = Habit.from_dict(data)
-    db.collection("User").document(habit.name).delete()
-    return {"message": "Habit removed successfully"}
+    data = request.get_json(silent=True) or {}
+    name = data.get("name")
+    if not name:
+        return jsonify({"ok": False, "error": "Missing habit name"}), 400
+    # Match the same uppercasing the model does on save
+    doc_id = str(name).strip().upper()
+    db.collection("Habits").document(doc_id).delete()
+    return jsonify({"ok": True}), 200
 
-@app.route("/get_habits", methods = ["GET"])
+
+@app.route("/get-habits", methods=["GET"])
 def get_habits():
-    docs = db.collection("User").stream()
+    docs = db.collection("Habits").stream()
+    habits = [doc.to_dict() for doc in docs]
+    return jsonify({"habits": habits}), 200
 
-    habitList = []
-    for doc in docs:
-        habitList.append(doc.to_dict())
 
-    return jsonify({"habits": habitList})
+if __name__ == "__main__":
+    app.run(debug=True)

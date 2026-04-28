@@ -186,7 +186,7 @@
       background: #fff;
       border-radius: 99px;
       height: 6px;
-      width: 60%; /* JS updates this */
+      width: 60%;
       transition: width 0.6s ease;
     }
     .progress-sub { font-size: 11px; opacity: 0.75; }
@@ -656,16 +656,10 @@
   </div>
 
   <script>
-    // ── Sample habit data (replace with Jinja template vars when backend ready) ──
-    // When Flask serves this page, swap this block with:
-    //   const habits = {{ habits | tojson }};
-    let habits = [
-      { id: '1', name: 'Morning Run',        icon: '🏃', recurrence: 'daily',    current_streak: 7,  color: '#534ab7', done: true  },
-      { id: '2', name: 'Read 20 pages',      icon: '📖', recurrence: 'daily',    current_streak: 3,  color: '#1d9e75', done: false },
-      { id: '3', name: 'Drink Water',        icon: '💧', recurrence: 'daily',    current_streak: 12, color: '#378add', done: true  },
-      { id: '4', name: 'Evening Meditation', icon: '🧘', recurrence: 'weekdays', current_streak: 5,  color: '#d85a30', done: false },
-      { id: '5', name: 'Journal',            icon: '✍️', recurrence: 'daily',    current_streak: 2,  color: '#d4537e', done: false },
-    ];
+    // ── Local habit state ──
+    // Starts empty; populated by saveHabit() after a successful POST.
+    // Hook up GET /get-habits on page load when ready to hydrate from Firestore.
+    let habits = [];
 
     let selectedEmoji = '🏃';
     let selectedFreq  = 'daily';
@@ -704,7 +698,7 @@
       }
 
       list.innerHTML = habits.map(h => {
-        const iconBg = h.color + '22';
+        const iconBg = (h.color || '#534ab7') + '22';
         return `
           <div class="habit-card ${h.done ? 'completed' : ''}" id="card-${h.id}" onclick="toggleHabit('${h.id}')">
             <div class="habit-icon-wrap" style="background:${iconBg}">${h.icon}</div>
@@ -726,7 +720,7 @@
 
     function capitalise(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
 
-    // ── Toggle completion ──
+    // ── Toggle completion (local-only for now) ──
     function toggleHabit(id) {
       const h = habits.find(x => x.id === id);
       if (!h) return;
@@ -734,7 +728,7 @@
       if (h.done) h.current_streak += 1;
       else if (h.current_streak > 0) h.current_streak -= 1;
       renderHabits();
-      // TODO: POST /toggle-habit { id } to Flask backend
+      // TODO: POST /toggle-habit { name } to Flask backend
     }
 
     // ── Stats ──
@@ -748,6 +742,7 @@
         `${done} <span>/ ${total} done</span>`;
       document.getElementById('progressBar').style.width = pct + '%';
       document.getElementById('progressSub').textContent =
+        total === 0 ? 'Complete your habits to build your streak!' :
         pct === 100 ? '🎉 All habits done — amazing day!' :
         pct >= 50   ? `${pct}% done — keep the momentum!` :
         `${pct}% done — you got this!`;
@@ -759,9 +754,11 @@
 
     // ── Add habit modal ──
     function openAddModal() {
-      document.getElementById('modalName').value = '';
+      const nameEl = document.getElementById('modalName');
+      nameEl.value = '';
+      nameEl.style.borderColor = '';
       document.getElementById('addModal').classList.add('open');
-      document.getElementById('modalName').focus();
+      nameEl.focus();
     }
     function closeAddModal() {
       document.getElementById('addModal').classList.remove('open');
@@ -785,7 +782,8 @@
       });
     });
 
-    function saveHabit() {
+    // ── Save habit (POSTs to Flask /add-habit) ──
+    async function saveHabit() {
       const nameEl = document.getElementById('modalName');
       const name   = nameEl.value.trim();
       if (!name) { nameEl.focus(); nameEl.style.borderColor = '#d85a30'; return; }
@@ -794,21 +792,51 @@
       const colors = ['#534ab7','#1d9e75','#d85a30','#378add','#d4537e','#ba7517'];
       const color  = colors[habits.length % colors.length];
 
-      const newHabit = {
-        id: Date.now().toString(),
+      const saveBtn = document.getElementById('modalSaveBtn');
+      saveBtn.disabled = true;
+      saveBtn.textContent = 'Saving...';
+
+      const payload = {
         name,
         icon: selectedEmoji,
-        recurrence: selectedFreq,
-        current_streak: 0,
         color,
-        done: false,
+        recurrence: selectedFreq,
       };
 
-      habits.push(newHabit);
-      renderHabits();
-      closeAddModal();
+      try {
+        const res = await fetch('/add-habit', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+        const result = await res.json();
 
-      // TODO: POST /add-habit { user_id, name, recurrence, icon, color } to Flask backend
+        if (!res.ok || !result.ok) {
+          alert('Could not save habit: ' + (result.error || 'Unknown error'));
+          return;
+        }
+
+        // Use the habit the backend returned (has the real id, uppercased name, etc.)
+        const saved = result.habit;
+        habits.push({
+          id: saved.id,
+          name: saved.name,
+          icon: saved.icon,
+          recurrence: saved.recurrence,
+          current_streak: saved.current_streak,
+          color: saved.color,
+          done: false,
+        });
+
+        renderHabits();
+        closeAddModal();
+      } catch (err) {
+        alert('Network error: could not reach the server.');
+        console.error(err);
+      } finally {
+        saveBtn.disabled = false;
+        saveBtn.textContent = 'Save Habit';
+      }
     }
 
     // Close modal on overlay click

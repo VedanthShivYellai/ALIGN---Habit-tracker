@@ -1,22 +1,30 @@
 import uuid
 from datetime import datetime
 
-#Claude AI helped with determining the proper place to add the valid_recurrence list
+# Claude AI helped with determining the proper place to add the valid_recurrence list
 valid_recurrences = {"daily", "weekdays", "weekly", "custom"}
+
+
 class Habit:
     # use keyword arguments for the optional fields with sensible defaults
     # defaults make habit creation easier for user
-    def __init__(self, name, category_id=None, description=None, goal_time="any", recurrence="daily", alerts=None, id=None, created_at=None, current_streak=0):
-        
+    def __init__(self, name, category_id=None, description=None,
+                 goal_time="any", recurrence="daily", alerts=None,
+                 icon="🎯", color="#534ab7",
+                 id=None, created_at=None, current_streak=0):
+
         # make sure there is a name
         # Gemini AI helped add the .strip() stuff
         if not name or not str(name).strip():
             raise ValueError("Habit name cannot be empty.")
         if recurrence not in valid_recurrences:
-            #Claude AI helped improve the formatting for the error message 
+            # Claude AI helped improve the formatting for the error message
             # and helped make it more dynamic. Initially I had a simple message with the valid recurrences
-            #listed out
-            raise ValueError(f"Invalid recurrence '{recurrence}'. Must be one of: {', '.join(sorted(valid_recurrences))}.")
+            # listed out
+            raise ValueError(
+                f"Invalid recurrence '{recurrence}'. "
+                f"Must be one of: {', '.join(sorted(valid_recurrences))}."
+            )
 
         self.id = id if id is not None else str(uuid.uuid4())
         self.name = str(name).strip().upper()
@@ -25,6 +33,8 @@ class Habit:
         self.goal_time = goal_time
         self.recurrence = recurrence
         self.alerts = alerts if alerts is not None else []
+        self.icon = icon
+        self.color = color
         self.current_streak = current_streak
         # Gemini helped with datetime.now(), originally I did datetime.now.isoformat() but we found
         # issues with the created_at timestamp being changed as it was passed to the database
@@ -32,32 +42,37 @@ class Habit:
         self.created_at = created_at if created_at else datetime.now().isoformat()
 
     def getHabit(self):
-        #Prepares the object to be saved to the database.
+        # Prepares the object to be saved to the database.
         return {
-            "user_id": self.user_id,
+            "id": self.id,
             "name": self.name,
             "category_id": self.category_id,
+            "description": self.description,
             "goal_time": self.goal_time,
             "recurrence": self.recurrence,
             "alerts": self.alerts,
+            "icon": self.icon,
+            "color": self.color,
             "current_streak": self.current_streak,
-            "created_at": self.created_at
+            "created_at": self.created_at,
         }
 
     @classmethod
     def from_dict(cls, data):
-        #Rebuilds a Habit object from a raw dictionary.
+        # Rebuilds a Habit object from a raw dictionary.
         return cls(
             id=data.get("id"),
             name=data.get("name"),
             category_id=data.get("category_id"),
+            description=data.get("description"),
             goal_time=data.get("goal_time", "any"),
             recurrence=data.get("recurrence", "daily"),
             alerts=data.get("alerts", []),
+            icon=data.get("icon", "🎯"),
+            color=data.get("color", "#534ab7"),
             current_streak=data.get("current_streak", 0),
-            created_at=data.get("created_at")
+            created_at=data.get("created_at"),
         )
 
     def __str__(self):
         return f"Habit(name='{self.name}', streak={self.current_streak})"
-        
