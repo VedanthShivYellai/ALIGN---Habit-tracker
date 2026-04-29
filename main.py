@@ -43,18 +43,20 @@ def remove_habit():
     data = request.json or {}
     name = data.get("name")
     if not name:
-        return jsonify({"ok": False, "error": "Missing habit name"}), 400
+        return jsonify({"ok": False, "error": "Missing habit name"})
     # Match the same uppercasing the model does on save
     doc_id = str(name).strip().upper()
     db.collection("Habits").document(doc_id).delete()
-    return jsonify({"ok": True}), 200
+    return jsonify({"ok": True})
 
 
 @app.route("/get-habits", methods=["GET"])
 def get_habits():
     docs = db.collection("Habits").stream()
-    habits = [doc.to_dict() for doc in docs]
-    return jsonify({"habits": habits}), 200
+    habitList = []
+    for doc in docs:
+        habitList.append(doc.to_dict())
+    return jsonify({"habits": habitList})
 
 
 if __name__ == "__main__":
