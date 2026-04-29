@@ -47,7 +47,7 @@ def remove_habit():
     # Match the same uppercasing the model does on save
     doc_id = str(name).strip().upper()
     db.collection("Habits").document(doc_id).delete()
-    return jsonify({"ok": True})
+    return jsonify({"ok": True}), 200
 
 
 @app.route("/get-habits", methods=["GET"])
@@ -56,8 +56,8 @@ def get_habits():
     habitList = []
     for doc in docs:
         habitList.append(doc.to_dict())
-    return jsonify({"habits": habitList})
+    return jsonify({"habits": habitList}), 200
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host="0.0.0.0", port=5019)
