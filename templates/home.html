@@ -787,9 +787,11 @@
     // ── Clock & greeting ──
     function updateClock() {
       const now = new Date();
-      const h = String(now.getHours()).padStart(2,'0');
-      const m = String(now.getMinutes()).padStart(2,'0');
-      document.getElementById('statusTime').textContent = `${h}:${m}`;
+      const rawHr = now.getHours();
+      const ampm  = rawHr >= 12 ? 'PM' : 'AM';
+      const hr12  = rawHr % 12 || 12;   // 0 -> 12, 13 -> 1, etc.
+      const m     = String(now.getMinutes()).padStart(2,'0');
+      document.getElementById('statusTime').textContent = `${hr12}:${m} ${ampm}`;
 
       const days   = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
       const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
@@ -801,7 +803,7 @@
       document.getElementById('greetText').textContent = greet;
     }
     updateClock();
-    setInterval(updateClock, 30000);
+    setInterval(updateClock, 1000);
 
     // ── Render habits ──
     function renderHabits() {

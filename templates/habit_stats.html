@@ -1,5 +1,3 @@
-<!-- For this, mostly AI was used to add new features in and help structure the code
-     Prompts that were mainly used inlcude just adding features -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -255,12 +253,14 @@
     // Live clock — updates the status bar every 30 seconds while the page is open.
     function updateClock() {
       const now = new Date();
-      const h = String(now.getHours()).padStart(2, '0');
-      const m = String(now.getMinutes()).padStart(2, '0');
-      document.getElementById('statusTime').textContent = `${h}:${m}`;
+      const rawHr = now.getHours();
+      const ampm  = rawHr >= 12 ? 'PM' : 'AM';
+      const hr12  = rawHr % 12 || 12;
+      const m     = String(now.getMinutes()).padStart(2, '0');
+      document.getElementById('statusTime').textContent = `${hr12}:${m} ${ampm}`;
     }
     updateClock();
-    setInterval(updateClock, 30000);
+    setInterval(updateClock, 1000);
   </script>
 
 </body>
