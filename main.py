@@ -58,6 +58,10 @@ def get_habits():
         habitList.append(doc.to_dict())
     return jsonify({"habits": habitList}), 200
 
+@app.route("/view-stats", methods=["GET"])
+def get_stats():
+    return render_template("habit_stats.html")
+
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5019)
