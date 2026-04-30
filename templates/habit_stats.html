@@ -176,7 +176,7 @@
   <div class="phone-group">
     <div class="phone">
       <div class="screen">
-        <div class="status-bar"><span>9:41</span><span>●●●</span></div>
+        <div class="status-bar"><span id="statusTime">9:41</span><span>●●●</span></div>
         <a class="detail-back" href="/">← Back</a>
         <div class="detail-hero">
           <div class="detail-icon">🧘</div>
@@ -250,6 +250,18 @@
     </div>
     <div class="screen-label">Habit detail</div>
   </div>
+
+  <script>
+    // Live clock — updates the status bar every 30 seconds while the page is open.
+    function updateClock() {
+      const now = new Date();
+      const h = String(now.getHours()).padStart(2, '0');
+      const m = String(now.getMinutes()).padStart(2, '0');
+      document.getElementById('statusTime').textContent = `${h}:${m}`;
+    }
+    updateClock();
+    setInterval(updateClock, 30000);
+  </script>
 
 </body>
 </html>
